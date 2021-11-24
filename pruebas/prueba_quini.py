@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 def download(some_url):
     some_page = urlopen(some_url)
-    return BeautifulSoup(some_page.read(), "html5lib")
+    return BeautifulSoup(some_page.read(), features="html.parser")
 
 
 """
@@ -35,12 +35,16 @@ def read_line(line):
         all_data.append(data.get_text())
     return all_data
 
+def func(x):
+    if str(x).startswith('./quiniela-cordoba-'):
+        return True
+
 
 if __name__ == "__main__":
 
-    my_soup = download("https://www.loteriadecordoba.com.ar/juegos/quiniela")
-    divs = my_soup.find_all('div', {"id": "extracto"})
-    print(len(divs))
+    my_soup = download("http://quinielatop.com.ar/resultado-quiniela-22-11-2021.html")
+    divs = my_soup.find_all('a', {"href": func})
+    print(divs)
     
     #print(divs)
     # sopa = bajar("https://www.google.com.ar/")
