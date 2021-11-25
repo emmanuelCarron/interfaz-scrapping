@@ -59,14 +59,18 @@ def obterner_extracto(sorteo):
     return extracto
 
 
+def presentar_extracto(extracto):
+    for i in range(1, 11):
+        print(f"Numero en Posicion {i} -- valor: {extracto[str(i)]}")
+
+
 if __name__ == "__main__":
 
     sorteo_elejido = seleccion_sorteo()
     url_sorteo = construir_url_sorteo(sorteo_elejido)
     sorteo = download(url_sorteo)
     extracto = obterner_extracto(sorteo)
-    for i in range(1, 11):
-        print(f"Numero en Posicion {i} -- valor: {extracto[str(i)]}")
+    presentar_extracto(extracto)
 
 
 
