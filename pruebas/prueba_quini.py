@@ -80,8 +80,11 @@ if __name__ == "__main__":
         for td in tr.children:
             results.append(td)
 
-    for i in results:
-        print(i.string)
+    extracto = {}
+    for i in range(0,len(results),2):
+        extracto[int(results[i].string)] = int(results[i+1].string)
+
+    print(extracto)
 
 
 
