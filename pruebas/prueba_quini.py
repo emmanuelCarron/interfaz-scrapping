@@ -1,6 +1,7 @@
 from urllib.request import urlopen
 
 from bs4 import BeautifulSoup
+from bs4 import element
 
 
 def download(some_url):
@@ -70,8 +71,13 @@ if __name__ == "__main__":
     sorteo_elejido = seleccion_sorteo()
     nueva_url = "http://quinielatop.com.ar" + sorteo_elejido[1:]
     sorteo = download(nueva_url)
-    tablas = sorteo.find_all("table", {"class":"resultados"})
-    otra_tabla = str(tablas)
+    tablas = sorteo.find("table", {"class":"resultados"})
+    filas = [tr for tr in tablas.children if isinstance(tr, element.Tag)]
+    filas = filas[2:-1]
+    del filas[5]
+    for i in filas:
+        print(i)
+
 
 
 
