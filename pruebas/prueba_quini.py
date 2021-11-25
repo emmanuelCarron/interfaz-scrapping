@@ -40,29 +40,39 @@ def func(x):
         return True
 
 
+def seleccion_sorteo():
+    global sorteos_dia
+    fecha = input("Fecha sorteo dd-mm-aaaa: ")  # Ver validacion de fecha - no a futuro
+    my_soup = download(f"http://quinielatop.com.ar/resultado-quiniela-{fecha}.html")
+    divs = my_soup.find_all('a', {"href": func})
+    sorteos_dia = {}
+    for i in divs:
+        url = i.get("href")
+        tipo_sorteo = url.split("-")[2]
+        sorteos_dia[tipo_sorteo] = url
+    tipo_de_sorteo = {"1": "primera",
+                      "2": "matutina",
+                      "3": "vespertina",
+                      "4": "nocturna"}
+    seleccion = input("""Elegir el tipo de sorteo a consultar: 
+    1 - Primera
+    2 - Matutina
+    3 - Vespertina
+    4 - Nocturna
+    0 - Salir
+    
+    -> """)
+    return sorteos_dia[tipo_de_sorteo[seleccion]]
+
+
 if __name__ == "__main__":
 
-    my_soup = download("http://quinielatop.com.ar/resultado-quiniela-22-11-2021.html")
-    divs = my_soup.find_all('a', {"href": func})
-    print(divs)
-    
-    #print(divs)
-    # sopa = bajar("https://www.google.com.ar/")
-    # # print(sopa.get_text())
-    # # print(sopa.prettify())
-    # # print(sopa.find_all('a')) #lista de todos los <a>
-    # enlaces = sopa.find_all('a')
-    # #for enlace in enlaces:
-    # #   print(enlace.get_text())
-
-    # for enlace in enlaces:
-    #     print(enlace.attrs["href"])
+    sorteo_elejido = seleccion_sorteo()
+    nueva_url = "http://quinielatop.com.ar" + sorteo_elejido[1:]
+    sorteo = download(nueva_url)
+    tablas = sorteo.find_all("table", {"class":"resultados"})
+    otra_tabla = str(tablas)
 
 
 
-    # soup = download("https://es.wikipedia.org/wiki/C%C3%B3rdoba_(Argentina)")
-    # tablaClima = soup.find_all('table')[6]
-    #
-    # tablaPyClima = read_table(tablaClima)
-    # for i in tablaPyClima[3]:
-    #     print(i[:4])
+
