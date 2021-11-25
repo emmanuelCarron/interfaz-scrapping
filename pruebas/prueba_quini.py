@@ -75,8 +75,13 @@ if __name__ == "__main__":
     filas = [tr for tr in tablas.children if isinstance(tr, element.Tag)]
     filas = filas[2:-1]
     del filas[5]
-    for i in filas:
-        print(i)
+    results = []
+    for tr in filas:
+        for td in tr.children:
+            results.append(td)
+
+    for i in results:
+        print(i.string)
 
 
 
