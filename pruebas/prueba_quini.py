@@ -12,7 +12,6 @@ def func(x):
     if str(x).startswith('./quiniela-cordoba-'):
         return True
 
-
 def seleccion_sorteo():
     fecha = input("Fecha sorteo dd-mm-aaaa: ")  # Ver validacion de fecha - no a futuro
     my_soup = download(f"http://quinielatop.com.ar/resultado-quiniela-{fecha}.html")
