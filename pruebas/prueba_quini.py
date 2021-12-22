@@ -86,5 +86,6 @@ if __name__ == "__main__":
         url = construir_url_sorteo(sorteo_elejido[key])
         sorteo = download(url)
         extracto_del_mes[key] = obterner_extracto(sorteo)
+        print("\n ----------------")
         print(key)
         presentar_extracto(extracto_del_mes[key])
