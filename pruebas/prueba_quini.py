@@ -1,7 +1,7 @@
 from urllib.request import urlopen
-
 from bs4 import BeautifulSoup
 from bs4 import element
+import generacion_fecha
 
 
 def download(some_url):
@@ -12,32 +12,28 @@ def func(x):
     if str(x).startswith('./quiniela-cordoba-'):
         return True
 
-def seleccion_sorteo():
-    fecha = input("Fecha sorteo dd-mm-aaaa: ")  # Ver validacion de fecha - no a futuro
-    my_soup = download(f"http://quinielatop.com.ar/resultado-quiniela-{fecha}.html")
-    divs = my_soup.find_all('a', {"href": func})
+def obtencion_extracto_mensual (fechas, tipo):
+    extractos_del_mes = {}
+    for fecha in fechas:
+        my_soup = download(f"http://quinielatop.com.ar/resultado-quiniela-{fecha}.html")
+        divs = my_soup.find_all('a', {"href": func})
     
-    if len(divs) == 0:
-        raise ValueError("No se encontró información para la fecha ingresada.")
-    
-    sorteos_dia = {}
-    for i in divs:
-        url = i.get("href")
-        tipo_sorteo = url.split("-")[2]
-        sorteos_dia[tipo_sorteo] = url
-    tipo_de_sorteo = {"1": "primera",
-                    "2": "matutina",
-                    "3": "vespertina",
-                    "4": "nocturna"}
-    seleccion = input("""Elegir el tipo de sorteo a consultar: 
-    1 - Primera
-    2 - Matutina
-    3 - Vespertina
-    4 - Nocturna
-    0 - Salir
-    
-    -> """)
-    return sorteos_dia[tipo_de_sorteo[seleccion]]
+        print("Descargando.... ")
+        if len(divs) == 0:
+            print (f"No se encontró información para la fecha {fecha}.")
+            continue
+
+        sorteos_dia = {}
+        for i in divs:
+            url = i.get("href")
+            tipo_sorteo = url.split("-")[2]
+            sorteos_dia[tipo_sorteo] = url
+
+        if fecha in sorteos_dia[tipo]:
+            extractos_del_mes[fecha] = sorteos_dia[tipo]
+
+    return extractos_del_mes
+
 
 def construir_url_sorteo(url_sorteo):
     return "http://quinielatop.com.ar" + url_sorteo[1:]
@@ -63,16 +59,32 @@ def presentar_extracto(extracto):
         print(f"Numero en Posicion {i} -- valor: {extracto[str(i)]}")
 
 
+def seleccion_tipo_sorteo():
+    tipo_de_sorteo = {"1": "primera",
+                      "2": "matutina",
+                      "3": "vespertina",
+                      "4": "nocturna"}
+    seleccion = input ("""Elegir el tipo de sorteo a consultar: 
+           1 - Primera
+           2 - Matutina
+           3 - Vespertina
+           4 - Nocturna
+           0 - Salir
+
+           -> """)
+
+    return tipo_de_sorteo[seleccion]
+
+
 if __name__ == "__main__":
 
-    sorteo_elejido = seleccion_sorteo()
-    url_sorteo = construir_url_sorteo(sorteo_elejido)
-    sorteo = download(url_sorteo)
-    extracto = obterner_extracto(sorteo)
-    presentar_extracto(extracto)
-
-
-
-
-
-
+    fechas_generadas = generacion_fecha.fechas()
+    tipo_sorteo = seleccion_tipo_sorteo()
+    sorteo_elejido = obtencion_extracto_mensual(fechas_generadas, tipo_sorteo)
+    extracto_del_mes = {}
+    for key in sorteo_elejido:
+        url = construir_url_sorteo(sorteo_elejido[key])
+        sorteo = download(url)
+        extracto_del_mes[key] = obterner_extracto(sorteo)
+        print(key)
+        presentar_extracto(extracto_del_mes[key])
